@@ -1,0 +1,58 @@
+#!/usr/bin/perl -w
+
+use strict;
+
+my $home=$ENV{HOME};
+my %places=();
+
+sub readConfig {
+    my $place;
+    open(FH,'<', "$home/.whereami.properties") or die("Could not open config file\n");
+    while (<FH>) {
+        chomp;
+
+        if (/^#/) {
+            next;
+        }
+
+        # start of new place
+        if (/^\w/) {
+            $place = $_;
+            $places{$place} = ();
+        }
+
+        # attributes of place
+        if (/^\s\s\w/) {
+            my $line = $_;
+            $line =~ m/^\s\s(\S+)\s(.*)$/;
+            $places{$place}{$1} = $2;
+        }
+    }
+    close FH;
+}
+
+sub applyPlace($) {
+    my ($place)=@_;
+
+    my $name = $places{$place}{'name'};
+    if (defined $name) {
+        `git config --global user.name "${name}"`;
+    }
+
+    my $email = $places{$place}{'email'};
+    if (defined $email) {
+        `git config --global user.email $email`;
+    }
+}
+
+MAIN: {
+    readConfig();
+
+    my $firstArg=shift @ARGV;
+
+    if (!defined $firstArg) {
+        die('pass in a location. e.g. "work"');
+    }
+
+    applyPlace($firstArg);
+}
