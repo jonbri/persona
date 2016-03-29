@@ -17,6 +17,14 @@ or if at work:
 ```
 whereami work
 ```
+
+## Installation
+This is a Perl script. Tested on 5v20.
+
+Put this on your `PATH` so it can be invoked in the same spirit as `whoami`.
+
+The checked-in version already has the executable bit set.
+
 ## Configuration
 Edit config file: `~/.whereami.properties`
 
