@@ -3,6 +3,7 @@
 use strict;
 
 my $home=$ENV{HOME};
+my $configFile="$home/.whereami.properties";
 my %places=();
 
 sub help() {
@@ -22,7 +23,13 @@ HELP
 
 sub readConfig {
     my $place;
-    open(FH,'<', "$home/.whereami.properties") or die("Could not open config file\n");
+
+    if (!-e $configFile) {
+        print "configuration file not found: $configFile\n";
+        exit 1;
+    }
+
+    open(FH,'<', $configFile) or die("Could not open config file\n");
     while (<FH>) {
         chomp;
 
@@ -50,7 +57,7 @@ sub applyPlace($) {
     my ($place)=@_;
 
     if (!defined $places{$place}) {
-        print "Place \"$place\" not found in configuration (~/.whereami.properties).\n";
+        print "Place \"$place\" not found in configuration ($configFile).\n";
         exit 1;
     }
 
