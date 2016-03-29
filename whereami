@@ -58,6 +58,8 @@ sub applyPlace($) {
     if (defined $email) {
         `git config --global user.email $email`;
     }
+
+    printSettings();
 }
 
 sub printSettings() {
