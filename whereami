@@ -49,6 +49,11 @@ sub readConfig {
 sub applyPlace($) {
     my ($place)=@_;
 
+    if (!defined $places{$place}) {
+        print "Place \"$place\" not found in configuration (~/.whereami.properties).\n";
+        exit 1;
+    }
+
     my $name = $places{$place}{'name'};
     if (defined $name) {
         `git config --global user.name "${name}"`;
