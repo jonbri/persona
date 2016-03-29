@@ -5,6 +5,21 @@ use strict;
 my $home=$ENV{HOME};
 my %places=();
 
+sub help() {
+    print STDERR <<'HELP';
+
+whereami - Quickly change Git personas
+
+  help      - see this message
+  <no args> - print out current settings
+  <place>   - change to <place> persona
+
+Full documentation: https://github.com/jonbri/whereami
+
+HELP
+}
+
+
 sub readConfig {
     my $place;
     open(FH,'<', "$home/.whereami.properties") or die("Could not open config file\n");
@@ -45,13 +60,23 @@ sub applyPlace($) {
     }
 }
 
+sub printSettings() {
+    print "user.name: ".`git config --get user.name`;
+    print "user.email: ".`git config --get user.email`;
+}
+
 MAIN: {
     readConfig();
 
     my $firstArg=shift @ARGV;
 
     if (!defined $firstArg) {
-        die('pass in a location. e.g. "work"');
+        printSettings();
+        exit 0;
+    }
+
+    if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
+        help();
     }
 
     applyPlace($firstArg);
