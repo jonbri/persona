@@ -33,7 +33,7 @@ sub readConfig {
     my $place;
 
     if (!-e $configFile) {
-        print "configuration file not found: $configFile\n";
+        print STDERR "configuration file not found: $configFile\n";
         exit 1;
     }
 
@@ -65,7 +65,7 @@ sub applyPlace($) {
     my ($place)=@_;
 
     if (!defined $places{$place}) {
-        print "Place \"$place\" not found in configuration ($configFile).\n";
+        print STDERR "Place \"$place\" not found in configuration ($configFile).\n";
         exit 1;
     }
 
