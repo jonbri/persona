@@ -2,18 +2,26 @@
 
 use strict;
 
+use Getopt::Long;
+
 my $home=$ENV{HOME};
 my $configFile="$home/.whereami.properties";
 my %places=();
+my $a_quiet;
+my $a_help;
 
 sub help() {
     print STDERR <<'HELP';
 
 whereami - Quickly change Git personas
 
+Args:
   help      - see this message
   <no args> - print out current settings
   <place>   - change to <place> persona
+
+Options:
+  --quiet   - don't write to stdout
 
 Full documentation: https://github.com/jonbri/whereami
 
@@ -75,22 +83,39 @@ sub applyPlace($) {
 }
 
 sub printSettings() {
-    print "user.name: ".`git config --get user.name`;
-    print "user.email: ".`git config --get user.email`;
+    if (!defined $a_quiet) {
+        print "user.name: ".`git config --get user.name`;
+        print "user.email: ".`git config --get user.email`;
+    }
+}
+
+sub getFirstNonOptionArg {
+    my $arg = shift @ARGV;
+    if (!defined $arg) {
+        return;
+    }
+    return ($arg =~ /^-/) ? getFirstNonOptionArg() : $arg;
 }
 
 MAIN: {
     readConfig();
 
-    my $firstArg=shift @ARGV;
+    GetOptions(
+        'quiet' => \$a_quiet,
+        'help' => \$a_help
+    ) || (help() && exit 1);
 
+    # show help if either arg or option is given
+    my $firstArg=getFirstNonOptionArg();
+    if (($firstArg && $firstArg eq "help") || defined $a_help) {
+        help();
+        exit 1;
+    }
+
+    # no args, just show settings
     if (!defined $firstArg) {
         printSettings();
         exit 0;
-    }
-
-    if ($firstArg eq "help" || $firstArg =~ /-(-)?h(elp)?/) {
-        help();
     }
 
     applyPlace($firstArg);
