@@ -39,5 +39,19 @@ home
   email jonathandavidbrink@gmail.com
 ```
 
+## Features
+
+### update
+Update commit author and comitter in a "rebase" fashion.
+
+```
+whereami --update HEAD~~~
+```
+
+Automates:
+```
+git rebase --interactive $ref --exec "git commit --amend --reset-author -CHEAD"
+```
+
 ## License
 [BSD-2-Clause](http://spdx.org/licenses/BSD-2-Clause)
