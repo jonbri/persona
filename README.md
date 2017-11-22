@@ -1,4 +1,4 @@
-# whereami
+# persona
 
 When switching between projects you often want to change who is going to be attributed to your commits.
 
@@ -9,24 +9,22 @@ The key piece of information that needs to be switched out in this situation is 
 So, before you commit:
 
 ```
-whereami home
+persona home
 ```
 
 or if at work:
 
 ```
-whereami work
+persona work
 ```
 
 ## Installation
-This is a Perl script. Tested on 5v20.
-
-Put this on your `PATH` so it can be invoked in the same spirit as `whoami`.
+This is a Perl script that can be placed on your `PATH`. Tested on 5v20.
 
 The checked-in version already has the executable bit set.
 
 ## Configuration
-Edit config file: `~/.whereami.properties`
+Edit config file: `~/.persona.properties`
 
 Space-delimited format:
 ```
@@ -45,7 +43,7 @@ home
 Update commit author and comitter in a "rebase" fashion.
 
 ```
-whereami --update HEAD~~~
+persona --update HEAD~~~
 ```
 
 Automates:
