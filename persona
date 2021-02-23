@@ -85,6 +85,15 @@ sub applyPlace($) {
         `git config --global user.email $email`;
     }
 
+    my $ssh_dir = "$home/.ssh";
+    my $esesh_dir = "$home/.esesh/$place";
+    if (-d $esesh_dir) {
+      `cp -R $esesh_dir/* $ssh_dir`;
+      `echo $place > $home/.ssh/persona`;
+    } else {
+      print ".esesh entry NOT found\n";
+    }
+
     printSettings();
 }
 

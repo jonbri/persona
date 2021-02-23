@@ -4,7 +4,7 @@ When switching between projects you often want to change who is going to be attr
 
 For example, one moment you are working on a work project, and the next moment you are fixing a bug in your personal project.
 
-The key piece of information that needs to be switched out in this situation is your Git config settings.
+The key piece of information that needs to be switched out in this situation is your Git config settings as well as your active SSH keys.
 
 So, before you commit:
 
@@ -35,6 +35,22 @@ work
 home
   name Johnny Brink
   email jonathandavidbrink@gmail.com
+```
+
+### SSH Key Swapping
+
+Place ssh keys, in directories matching their "place", in `~/.esesh`.
+
+For example:
+```sh
+$ tree ~/.esesh
+/home/user/.esesh
+├── home
+│   ├── id_rsa
+│   └── id_rsa.pub
+└── work
+    ├── id_rsa
+    └── id_rsa.pub
 ```
 
 ## Features
