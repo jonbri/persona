@@ -99,8 +99,8 @@ sub applyPlace($) {
 
 sub printSettings() {
     if (!defined $a_quiet) {
-        print "user.name: ".`git config --get user.name`;
-        print "user.email: ".`git config --get user.email`;
+        print `git config --get user.name`;
+        print `git config --get user.email`;
     }
 }
 
