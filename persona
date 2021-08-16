@@ -86,9 +86,10 @@ sub applyPlace($) {
     }
 
     my $ssh_dir = "$home/.ssh";
-    my $esesh_dir = "$home/.esesh/$place";
+    my $esesh_dir = "$home/.esesh/$place/.ssh";
     if (-d $esesh_dir) {
-      `cp -R $esesh_dir/* $ssh_dir`;
+      `cp -R $esesh_dir/id_rsa $ssh_dir/id_rsa`;
+      `cp -R $esesh_dir/id_rsa.pub $ssh_dir/id_rsa.pub`;
       `echo $place > $home/.ssh/persona`;
     } else {
       print ".esesh entry NOT found\n";
