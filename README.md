@@ -37,9 +37,9 @@ home
   email jonathandavidbrink@gmail.com
 ```
 
-### SSH Key Swapping
+### File Swapping
 
-Place ssh keys, in directories matching their "place", in `~/.esesh`.
+Place ssh keys, and .npmrc files in directories matching their "place", in `~/.esesh`.
 
 For example:
 ```sh
