@@ -123,7 +123,12 @@ sub applyUpdate {
     }
 
     if (defined $a_update) {
-        `git rebase --interactive $a_update --exec \"git commit --amend --reset-author -CHEAD\"`;
+        `git update-ref -d refs/heads/z_persona_tmp`;
+        `git branch z_persona_tmp`;
+        `git reset HEAD~`;
+        `git add .`;
+        `git commit --reuse-message=z_persona_tmp --reset-author`;
+        `git branch -D z_persona_tmp`;
     }
 }
 
