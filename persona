@@ -14,18 +14,22 @@ my $a_help;
 sub help() {
     print STDERR <<'HELP';
 
-persona - Quickly change Git personas
+persona
 
-Args:
-  help         - see this message
-  update <ref> - fix author and comitter till ref (default: HEAD)
-  <no args>    - print out current settings
-  <place>      - change to <place> persona
+USAGE:
+  >> persona [<place>] [options]
 
 Options:
-  --quiet   - don't write to stdout
+  --update (-u) Fix author and committer of HEAD
+  --quiet  (-q) Don't write to stdout
+  --help   (-h) See this message
 
-Full documentation: https://github.com/jonbri/persona
+EXAMPLES:
+  >> persona      - print current settings
+  >> persona work - switch to "work" persona
+  >> persona -u   - update HEAD commit
+
+https://github.com/jonbri/persona
 
 HELP
 }
@@ -117,11 +121,6 @@ sub getFirstNonOptionArg {
 }
 
 sub applyUpdate {
-    # if no argument is passed-in, default to HEAD
-    if (defined $a_update && $a_update eq "") {
-        $a_update = "HEAD";
-    }
-
     if (defined $a_update) {
         `git update-ref -d refs/heads/z_persona_tmp`;
         `git branch z_persona_tmp`;
@@ -137,7 +136,7 @@ MAIN: {
 
     GetOptions(
         'quiet' => \$a_quiet,
-        'update:s' => \$a_update,
+        'update' => \$a_update,
         'help' => \$a_help
     ) || (help() && exit 1);
 
