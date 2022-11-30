@@ -7,6 +7,8 @@ use Getopt::Long;
 my $home=$ENV{HOME};
 my $configFile="$home/.persona.properties";
 my %places=();
+my $a_add;
+my $a_show;
 my $a_quiet;
 my $a_update;
 my $a_help;
@@ -20,14 +22,17 @@ USAGE:
   >> persona [<place>] [options]
 
 Options:
+  --add    (-a) Add entry to .persona.properties
   --update (-u) Fix author and committer of HEAD
+  --show   (-s) Print config
   --quiet  (-q) Don't write to stdout
   --help   (-h) See this message
 
 EXAMPLES:
-  >> persona      - print current settings
-  >> persona work - switch to "work" persona
-  >> persona -u   - update HEAD commit
+  >> persona         - print current settings
+  >> persona -a work - add "work" persona
+  >> persona work    - switch to "work" persona
+  >> persona -u      - update HEAD commit
 
 https://github.com/jonbri/persona
 
@@ -38,9 +43,12 @@ HELP
 sub readConfig {
     my $place;
 
-    if (!-e $configFile) {
-        print STDERR "configuration file not found: $configFile\n";
-        exit 1;
+    if (! -e $configFile) {
+        open my $FH, ">", $configFile;
+        close $FH;
+        print "created $configFile\n" ;
+        print "now add entries using \"-a\"\n" ;
+        exit 0;
     }
 
     open(FH,'<', $configFile) or die("Could not open config file\n");
@@ -112,6 +120,15 @@ sub printSettings() {
     }
 }
 
+sub printConfig() {
+    if (!defined $a_quiet) {
+        open(FH, "<", $configFile) or die "Couldn't open $configFile";
+        print <FH>;
+        close (FH);
+        print "\n"
+    }
+}
+
 sub getFirstNonOptionArg {
     my $arg = shift @ARGV;
     if (!defined $arg) {
@@ -132,19 +149,43 @@ sub applyUpdate {
 }
 
 MAIN: {
-    readConfig();
-
     GetOptions(
+        'add=s' => \$a_add,
+        'show' => \$a_show,
         'quiet' => \$a_quiet,
         'update' => \$a_update,
         'help' => \$a_help
     ) || (help() && exit 1);
+    readConfig();
 
     # show help if either arg or option is given
     my $firstArg=getFirstNonOptionArg();
     if (($firstArg && $firstArg eq "help") || defined $a_help) {
         help();
         exit 1;
+    }
+
+    if (defined $a_show) {
+        printConfig();
+        exit 0;
+    }
+
+    if (defined $a_add) {
+        if (exists($places{$a_add})) {
+            print STDERR "Place \"$a_add\" already exists.\n";
+            exit 1;
+        }
+
+        open(FH, ">>", $configFile) or die "Couldn't open $configFile";
+
+        print "\nEnter $a_add persona name:\n";
+        my $name = <>;
+        chomp $name;
+        print "\nEnter $a_add persona email:\n";
+        my $email = <>;
+        chomp $email;
+
+        print FH "\n$a_add\n  name $name\n  email $email\n\n";
     }
 
     # no args, just show settings
