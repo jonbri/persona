@@ -8,6 +8,7 @@ my $home=$ENV{HOME};
 my $configFile="$home/.persona.properties";
 my %places=();
 my $a_add;
+my $a_edit;
 my $a_show;
 my $a_quiet;
 my $a_update;
@@ -24,6 +25,7 @@ USAGE:
 Options:
   --add    (-a) Add entry to .persona.properties
   --update (-u) Fix author and committer of HEAD
+  --edit   (-e) Open config file in editor
   --show   (-s) Print config
   --quiet  (-q) Don't write to stdout
   --help   (-h) See this message
@@ -152,6 +154,7 @@ MAIN: {
     GetOptions(
         'add=s' => \$a_add,
         'show' => \$a_show,
+        'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'update' => \$a_update,
         'help' => \$a_help
@@ -167,6 +170,12 @@ MAIN: {
 
     if (defined $a_show) {
         printConfig();
+        exit 0;
+    }
+
+    if (defined $a_edit) {
+        my $editor = $ENV{EDITOR} || 'vim';
+        system $editor => $configFile;
         exit 0;
     }
 
