@@ -5,7 +5,7 @@ use strict;
 use Getopt::Long;
 
 my $home=$ENV{HOME};
-my $configFile="$home/.persona.properties";
+my $configFile="$home/.persona.conf";
 my %places=();
 my $a_add;
 my $a_edit;
@@ -23,7 +23,7 @@ USAGE:
   >> persona [<place>] [options]
 
 Options:
-  --add    (-a) Add entry to .persona.properties
+  --add    (-a) Add entry to .persona.conf
   --update (-u) Fix author and committer of HEAD
   --edit   (-e) Open config file in editor
   --show   (-s) Print config
