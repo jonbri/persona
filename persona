@@ -13,6 +13,7 @@ my $a_name;
 my $a_list;
 my $a_quiet;
 my $a_fix;
+my $a_known;
 my $a_help;
 
 sub help() {
@@ -29,6 +30,7 @@ Options:
   --edit  (-e) Open config file in editor
   --name  (-n) Display active place name
   --list  (-l) Print places
+  --known (-k) Print commits matching persona
   --quiet (-q) Don't write to stdout
   --help  (-h) See this message
 
@@ -159,6 +161,7 @@ MAIN: {
         'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'fix' => \$a_fix,
+        'known' => \$a_known,
         'help' => \$a_help
     ) || (help() && exit 1);
     readConfig();
@@ -194,6 +197,21 @@ MAIN: {
     if (defined $a_edit) {
         my $editor = $ENV{EDITOR} || 'vim';
         system $editor => $configFile;
+        exit 0;
+    }
+
+    if (defined $a_known) {
+        my $email = `git config --get user.email`;
+        chomp($email);
+        my @gitLogAuthor = `git log --oneline --author=$email`;
+        if (scalar @gitLogAuthor > 0) {
+            print "${email} matches:\n";
+            foreach (@gitLogAuthor) {
+                print "$_";
+            }
+        } else {
+            print "${email} not found\n";
+        }
         exit 0;
     }
 
