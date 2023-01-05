@@ -13,7 +13,7 @@ my $a_name;
 my $a_list;
 my $a_quiet;
 my $a_fix;
-my $a_known;
+my $a_knownFrom;
 my $a_help;
 
 sub help() {
@@ -30,8 +30,9 @@ Options:
   --edit  (-e) Open config file in editor
   --name  (-n) Display active place name
   --list  (-l) Print places
-  --known (-k) Print commits matching persona
   --quiet (-q) Don't write to stdout
+  --known-from (-k) Print commits that match
+                    current persona, starting at ref
   --help  (-h) See this message
 
 EXAMPLES:
@@ -161,7 +162,7 @@ MAIN: {
         'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'fix' => \$a_fix,
-        'known' => \$a_known,
+        'known-from=s' => \$a_knownFrom,
         'help' => \$a_help
     ) || (help() && exit 1);
     readConfig();
@@ -200,10 +201,10 @@ MAIN: {
         exit 0;
     }
 
-    if (defined $a_known) {
+    if (defined $a_knownFrom) {
         my $email = `git config --get user.email`;
         chomp($email);
-        my @gitLogAuthor = `git log --oneline --author=$email`;
+        my @gitLogAuthor = `git log $a_knownFrom --oneline --author=$email`;
         if (scalar @gitLogAuthor > 0) {
             print "${email} matches:\n";
             foreach (@gitLogAuthor) {
