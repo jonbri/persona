@@ -14,6 +14,7 @@ my $a_list;
 my $a_quiet;
 my $a_fix;
 my $a_knownFrom;
+my $a_whoami;
 my $a_help;
 
 sub help() {
@@ -25,12 +26,13 @@ USAGE:
   >> persona [<place>] [options]
 
 Options:
-  --add   (-a) Add entry to .persona.conf
-  --fix   (-f) Update HEAD author and committer
-  --edit  (-e) Open config file in editor
-  --name  (-n) Display active place name
-  --list  (-l) Print places
-  --quiet (-q) Don't write to stdout
+  --add        (-a) Add entry to .persona.conf
+  --fix        (-f) Update HEAD author and committer
+  --edit       (-e) Open config file in editor
+  --name       (-n) Display active place name
+  --list       (-l) Print places
+  --quiet      (-q) Don't write to stdout
+  --whoami     (-w) Print current persona
   --known-from (-k) Print commits that match
                     current persona, starting at ref
   --help  (-h) See this message
@@ -162,6 +164,7 @@ MAIN: {
         'edit' => \$a_edit,
         'quiet' => \$a_quiet,
         'fix' => \$a_fix,
+        'whoami' => \$a_whoami,
         'known-from=s' => \$a_knownFrom,
         'help' => \$a_help
     ) || (help() && exit 1);
@@ -180,6 +183,25 @@ MAIN: {
         }
         exit 0;
     }
+
+    if (defined $a_whoami) {
+        my $email = `git config --get user.email`;
+        chomp $email;
+        my $name = `git config --get user.name`;
+        chomp $name;
+
+        # loop over places and find match with email and name
+        for(keys %places){
+            if ($email eq $places{$_}{email} && $name eq $places{$_}{name}) {
+                print "$_\n";
+                exit 0;
+            }
+        }
+
+        print "not found\n";
+        exit 0;
+    }
+
 
     if (defined $a_name) {
         if (!defined $a_quiet) {
